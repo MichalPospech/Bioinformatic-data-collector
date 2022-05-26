@@ -13,10 +13,6 @@ import lib.uniprot.config as UC
 from lib.uniprot.query_generator import UniprotQueryBuilder
 
 
-class ConditionallyRequiredArgument(click.Argument):
-    pass
-
-
 def cb_validate_path(
         ctx: click.Context, command: click.Command,
         path: T.Optional[pathlib.Path]) -> T.Optional[pathlib.Path]:
