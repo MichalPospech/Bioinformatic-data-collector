@@ -1,0 +1,22 @@
+{
+    "dataSelector": {
+        "columns": [
+            "ProteinId",
+            "Protein",
+            "Name",
+            "Reaction"
+        ]
+    },
+    "dataFilter": {
+        "pfams": [
+            "PF00067"
+        ],
+        "reviewed": true,
+        "taxa": [
+            "3193"
+        ],
+        "supfams": [
+            "SSF48264"
+        ]
+    }
+}
