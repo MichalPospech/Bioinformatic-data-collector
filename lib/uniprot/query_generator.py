@@ -130,7 +130,7 @@ class UniprotQueryBuilder(SparqlQueryBuilder[Entity, UC.UniprotSearchConfig]):
         if self.config.data_filter.supfams:
             patterns.append(
                 SQ.InlineData(mappings[Entity.SUPFAM], [
-                    f"<http://purl.uniprot.org/SUPFAM/{supfam}>"
+                    f"<http://purl.uniprot.org/supfam/{supfam}>"
                     for supfam in self.config.data_filter.supfams
                 ]))
         return patterns
