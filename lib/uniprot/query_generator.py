@@ -97,6 +97,8 @@ class UniprotQueryBuilder(SparqlQueryBuilder[Entity, UC.UniprotSearchConfig]):
             entities.append(Entity.PFAM)
         if self.config.data_filter.taxa is not None:
             entities.append(Entity.TAXON_FILTERING)
+        if self.config.data_filter.supfams:
+            entities.append(Entity.SUPFAM)
         return entities
 
     def _get_necessary_entities(self) -> T.List[Entity]:
