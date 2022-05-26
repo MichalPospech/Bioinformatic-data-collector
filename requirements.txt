@@ -1,0 +1,7 @@
+dataclasses-json
+pandas
+pandas-stubs
+openpyxl
+requests
+types-requests
+click
