@@ -3,6 +3,8 @@ import typing as T
 import dataclasses_json as DJ
 from enum import Enum
 
+URL = 'https://sparql.uniprot.org'
+
 
 class Feature(Enum):
     PROTEIN = 'Protein'
@@ -10,9 +12,6 @@ class Feature(Enum):
     NAME = 'Name'
     SEQUENCE = 'Sequence'
     REACTION = 'Reaction'
-
-
-URL = "https://sparql.uniprot.org"
 
 
 @DJ.dataclass_json(letter_case=DJ.LetterCase.CAMEL)

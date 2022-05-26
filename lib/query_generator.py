@@ -4,8 +4,8 @@ import typing as T
 from enum import Enum
 from dataclasses import dataclass
 
-TEntity = T.TypeVar("TEntity", bound=Enum)
-TConfig = T.TypeVar("TConfig")
+TEntity = T.TypeVar('TEntity', bound=Enum)
+TConfig = T.TypeVar('TConfig')
 
 
 @dataclass

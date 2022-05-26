@@ -10,18 +10,18 @@ class Entity(Enum):
     def __str__(self) -> str:
         return str(self.value)
 
-    PROTEIN = "protein"
-    FULL_NAME = "full_name"
-    RECOMMENDED_NAME = "recommended_name"
-    PROTEIN_ID = "protein_id"
-    PFAM = "pfam"
-    SEQUENCE_OBJECT = "sequence_object"
-    SEQUENCE = "sequence"
-    ORGANISM = "organism"
-    TAXON_FILTERING = "taxon_filtering"
-    SUPFAM = "supfam"
-    CATALYTIC_ACTIVITY = "catalytic_activity"
-    CATALYZED_REACTION = "catalyzed_reaction"
+    PROTEIN = 'protein'
+    FULL_NAME = 'full_name'
+    RECOMMENDED_NAME = 'recommended_name'
+    PROTEIN_ID = 'protein_id'
+    PFAM = 'pfam'
+    SEQUENCE_OBJECT = 'sequence_object'
+    SEQUENCE = 'sequence'
+    ORGANISM = 'organism'
+    TAXON_FILTERING = 'taxon_filtering'
+    SUPFAM = 'supfam'
+    CATALYTIC_ACTIVITY = 'catalytic_activity'
+    CATALYZED_REACTION = 'catalyzed_reaction'
 
 
 def single_recipe_triplet(source: Entity,
@@ -34,35 +34,35 @@ def single_recipe_triplet(source: Entity,
 class UniprotQueryBuilder(SparqlQueryBuilder[Entity, UC.UniprotSearchConfig]):
     recipes = {
         Entity.FULL_NAME:
-        single_recipe_triplet(Entity.RECOMMENDED_NAME, "up:fullName"),
+        single_recipe_triplet(Entity.RECOMMENDED_NAME, 'up:fullName'),
         Entity.PFAM:
-        single_recipe_triplet(Entity.PROTEIN, "rdfs:seeAlso"),
+        single_recipe_triplet(Entity.PROTEIN, 'rdfs:seeAlso'),
         Entity.RECOMMENDED_NAME:
-        single_recipe_triplet(Entity.PROTEIN, "up:recommendedName"),
+        single_recipe_triplet(Entity.PROTEIN, 'up:recommendedName'),
         Entity.PROTEIN_ID:
         SingleRecipe(
             Entity.PROTEIN, lambda source, target: SQ.BindExpression(
-                target, [source], "substr(str({}), 33)")),
+                target, [source], 'substr(str({}), 33)')),
         Entity.SEQUENCE_OBJECT:
         SingleRecipe(
             Entity.PROTEIN, lambda source, target: SQ.SimpleGraphPattern([
-                SQ.Triplet(source, "up:sequence", target),
-                SQ.Triplet(target, "a", "up:Simple_Sequence")
+                SQ.Triplet(source, 'up:sequence', target),
+                SQ.Triplet(target, 'a', 'up:Simple_Sequence')
             ])),
         Entity.SEQUENCE:
-        single_recipe_triplet(Entity.SEQUENCE_OBJECT, "rdf:value"),
+        single_recipe_triplet(Entity.SEQUENCE_OBJECT, 'rdf:value'),
         Entity.ORGANISM:
-        single_recipe_triplet(Entity.PROTEIN, "up:organism"),
+        single_recipe_triplet(Entity.PROTEIN, 'up:organism'),
         Entity.TAXON_FILTERING:
-        single_recipe_triplet(Entity.ORGANISM, "^skos:narrowerTransitive+"),
+        single_recipe_triplet(Entity.ORGANISM, '^skos:narrowerTransitive+'),
         Entity.SUPFAM:
-        single_recipe_triplet(Entity.PROTEIN, "rdfs:seeAlso"),
+        single_recipe_triplet(Entity.PROTEIN, 'rdfs:seeAlso'),
         Entity.CATALYTIC_ACTIVITY:
         single_recipe_triplet(Entity.PROTEIN,
-                              "up:annotation/up:catalyticActivity"),
+                              'up:annotation/up:catalyticActivity'),
         Entity.CATALYZED_REACTION:
         single_recipe_triplet(Entity.CATALYTIC_ACTIVITY,
-                              "up:catalyzedReaction"),
+                              'up:catalyzedReaction'),
     }
     entity_mappings = {
         UC.Feature.NAME: Entity.FULL_NAME,
@@ -75,12 +75,12 @@ class UniprotQueryBuilder(SparqlQueryBuilder[Entity, UC.UniprotSearchConfig]):
     root_entity = Entity.PROTEIN
 
     prefixes = [
-        SQ.Prefix("up", "<http://purl.uniprot.org/core/>"),
-        SQ.Prefix("rdfs", "<http://www.w3.org/2000/01/rdf-schema#>"),
-        SQ.Prefix("rdf", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#>"),
-        SQ.Prefix("skos", "<http://www.w3.org/2004/02/skos/core#>"),
-        SQ.Prefix("chebi", "<http://purl.obolibrary.org/obo/chebi/>"),
-        SQ.Prefix("rh", "<http://rdf.rhea-db.org/>")
+        SQ.Prefix('up', '<http://purl.uniprot.org/core/>'),
+        SQ.Prefix('rdfs', '<http://www.w3.org/2000/01/rdf-schema#>'),
+        SQ.Prefix('rdf', '<http://www.w3.org/1999/02/22-rdf-syntax-ns#>'),
+        SQ.Prefix('skos', '<http://www.w3.org/2004/02/skos/core#>'),
+        SQ.Prefix('chebi', '<http://purl.obolibrary.org/obo/chebi/>'),
+        SQ.Prefix('rh', '<http://rdf.rhea-db.org/>')
     ]
 
     def __init__(self, config: UC.UniprotSearchConfig) -> None:
@@ -110,27 +110,27 @@ class UniprotQueryBuilder(SparqlQueryBuilder[Entity, UC.UniprotSearchConfig]):
         self, mappings: T.Dict[Entity, SQ.Variable]
     ) -> T.List[SQ.GraphPattern | SQ.Triplet]:
         patterns: T.List[SQ.GraphPattern | SQ.Triplet] = [
-            SQ.Triplet(mappings[Entity.PROTEIN], "a", "up:Protein")
+            SQ.Triplet(mappings[Entity.PROTEIN], 'a', 'up:Protein')
         ]
         if self.config.data_filter.pfams:
             patterns.append(
                 SQ.InlineData(mappings[Entity.PFAM], [
-                    f"<http://purl.uniprot.org/pfam/{pfam}>"
+                    f'<http://purl.uniprot.org/pfam/{pfam}>'
                     for pfam in self.config.data_filter.pfams
                 ]))
         if self.config.data_filter.reviewed:
             patterns.append(
-                SQ.Triplet(mappings[Entity.PROTEIN], "up:reviewed", "true"))
+                SQ.Triplet(mappings[Entity.PROTEIN], 'up:reviewed', 'true'))
         if self.config.data_filter.taxa:
             patterns.append(
                 SQ.InlineData(mappings[Entity.TAXON_FILTERING], [
-                    f"<http://purl.uniprot.org/taxonomy/{taxon}>"
+                    f'<http://purl.uniprot.org/taxonomy/{taxon}>'
                     for taxon in self.config.data_filter.taxa
                 ]))
         if self.config.data_filter.supfams:
             patterns.append(
                 SQ.InlineData(mappings[Entity.SUPFAM], [
-                    f"<http://purl.uniprot.org/supfam/{supfam}>"
+                    f'<http://purl.uniprot.org/supfam/{supfam}>'
                     for supfam in self.config.data_filter.supfams
                 ]))
         return patterns

@@ -15,14 +15,13 @@ class Variable:
         return self.get_pretty_text()
 
     def get_pretty_text(self) -> str:
-        return f"?{self.name}"
+        return f'?{self.name}'
 
 
 TripletMemeber = Variable | str
 
 
 class Triplet:
-    # triplet: T.Sequence[TripletMemeber]
 
     def __init__(self, subj: TripletMemeber, pred: TripletMemeber,
                  obj: TripletMemeber):
@@ -32,7 +31,7 @@ class Triplet:
         return self.get_pretty_text()
 
     def get_pretty_text(self) -> str:
-        return " ".join(map(str, self.triplet)) + " ."
+        return ' '.join(map(str, self.triplet)) + ' .'
 
     def get_lines(self) -> T.Iterable[str]:
         return [self.get_pretty_text()]
@@ -50,7 +49,6 @@ class GraphPattern:
 
 
 class SimpleGraphPattern(GraphPattern):
-    # patterns: T.Sequence[GraphPattern | Triplet]
 
     def __init__(self, patterns: T.Sequence[GraphPattern | Triplet]):
         self.patterns = patterns
@@ -63,17 +61,16 @@ class SimpleGraphPattern(GraphPattern):
 
     def get_lines(self) -> T.Iterable[str]:
         lines = map(
-            lambda l: " " * 4 + l,
+            lambda l: ' ' * 4 + l,
             IT.chain.from_iterable(map(lambda p: p.get_lines(),
                                        self.patterns)))
-        yield "{"
+        yield '{'
         for l in lines:
             yield l
-        yield "}"
+        yield '}'
 
 
 class OptionalGraphPattern(GraphPattern):
-    # graph_pattern: GraphPattern
 
     def __init__(self, graph_pattern: GraphPattern):
         self.graph_pattern = graph_pattern
@@ -86,14 +83,12 @@ class OptionalGraphPattern(GraphPattern):
 
     def get_lines(self) -> T.Iterable[str]:
         lines = list(self.graph_pattern.get_lines())
-        yield f"OPTIONAL {lines[0]}"
+        yield f'OPTIONAL {lines[0]}'
         for l in lines[1:]:
             yield l
 
 
 class InlineData(GraphPattern):
-    # variable: Variable
-    # values: T.Sequence[str]
 
     def __init__(self, variable: Variable, values: T.Sequence[str]):
         self.values = values
@@ -106,15 +101,13 @@ class InlineData(GraphPattern):
         return os.linesep.join(self.get_lines())
 
     def get_lines(self) -> T.Iterable[str]:
-        yield f"VALUES {self.variable.get_pretty_text()} {{"
+        yield f'VALUES {self.variable.get_pretty_text()} {{'
         for value in self.values:
-            yield " " * 4 + value
-        yield "}"
+            yield ' ' * 4 + value
+        yield '}'
 
 
 class ServiceGraphPattern(GraphPattern):
-    # graph_pattern: GraphPattern
-    # service: str
 
     def __init__(self, service: str, pattern: GraphPattern):
         self.service = service
@@ -128,15 +121,12 @@ class ServiceGraphPattern(GraphPattern):
 
     def get_lines(self) -> T.Iterable[str]:
         lines = list(self.graph_pattern.get_lines())
-        yield f"SERVICE {self.service} {lines[0]}"
+        yield f'SERVICE {self.service} {lines[0]}'
         for l in lines[1:]:
             yield l
 
 
 class BindExpression(GraphPattern):
-    # out_var: Variable
-    # in_vars: T.Sequence[Variable]
-    # expression: str
 
     def __init__(self, out_var: Variable, in_vars: T.Sequence[Variable],
                  expr: str):
@@ -151,7 +141,7 @@ class BindExpression(GraphPattern):
         substituted_expression = str.format(self.expression,
                                             *list(map(str, self.in_vars)))
         return str.format(
-            f"BIND(({substituted_expression}) AS {str(self.out_var)})")
+            f'BIND(({substituted_expression}) AS {str(self.out_var)})')
 
     def get_lines(self) -> T.Iterable[str]:
         return [self.get_pretty_text()]
@@ -169,16 +159,13 @@ class Prefix:
         return self.get_pretty_text()
 
     def get_pretty_text(self) -> str:
-        return f"PREFIX {self.prefix}: {self.iri_ref}"
+        return f'PREFIX {self.prefix}: {self.iri_ref}'
 
     def get_lines(self) -> T.Iterable[str]:
         return [self.get_pretty_text()]
 
 
 class SelectQuery:
-    # prefixes: T.Sequence[Prefix]
-    # variables: T.Sequence[Variable]
-    # graph_pattern: GraphPattern
 
     def __init__(self,
                  prefixes: T.Sequence[Prefix],
@@ -198,11 +185,14 @@ class SelectQuery:
 
     def get_lines(self) -> T.Iterable[str]:
         prefixes = map(lambda p: p.get_pretty_text(), self.prefixes)
-        variables = f"SELECT {'DISTINCT' if self.distinct else ''} {' '.join(map(lambda v: v.get_pretty_text(), self.variables))}"
+        select = 'SELECT DISTINCT' if self.distinct else 'SELECT'
+        variables_str = ' '.join(
+            map(lambda v: v.get_pretty_text(), self.variables))
+        variables = f'{select} {variables_str}'
         graph_pattern_lines = list(self.graph_pattern.get_lines())
         for prefix in prefixes:
             yield prefix
         yield variables
-        yield f"WHERE {graph_pattern_lines[0]}"
+        yield f'WHERE {graph_pattern_lines[0]}'
         for graph_pattern_line in graph_pattern_lines[1:]:
             yield graph_pattern_line
