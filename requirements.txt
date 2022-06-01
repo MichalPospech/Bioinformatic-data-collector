@@ -5,3 +5,4 @@ openpyxl
 requests
 types-requests
 click
+networkx
