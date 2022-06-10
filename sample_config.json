@@ -2,7 +2,14 @@
     "dataSelector": {
         "columns": [
             "ProteinId",
-            "Protein"
+            "Protein",
+            "Reaction",
+            "ReactionParticipant"
+        ]
+    },
+    "dataFilter": {
+        "taxa": [
+            "35493"
         ]
     }
 }

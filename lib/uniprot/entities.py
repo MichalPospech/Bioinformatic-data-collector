@@ -13,3 +13,5 @@ class UniprotEntity(SparqlEntity):
     ORGANISM = "organism"
     TAXON_FILTERING = "taxon_filtering"
     SUPFAM = "supfam"
+    CATALYTIC_ACTIVITY = 'catalytic_activity'
+    CATALYZED_REACTION = 'catalyzed_reaction'

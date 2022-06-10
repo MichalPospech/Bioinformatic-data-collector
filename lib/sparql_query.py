@@ -121,7 +121,7 @@ class ServiceGraphPattern(GraphPattern):
 
     def get_lines(self) -> T.Iterable[str]:
         lines = list(self.graph_pattern.get_lines())
-        yield f'SERVICE {self.service} {lines[0]}'
+        yield f'SERVICE <{self.service}> {lines[0]}'
         for l in lines[1:]:
             yield l
 

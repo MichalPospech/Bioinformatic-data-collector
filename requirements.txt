@@ -6,3 +6,4 @@ requests
 types-requests
 click
 networkx
+networkx-stubs
