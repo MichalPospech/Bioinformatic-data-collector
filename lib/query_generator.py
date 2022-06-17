@@ -4,11 +4,12 @@ import typing as T
 from enum import Enum
 from dataclasses import dataclass
 from .common import SparqlEntity, Recipe, Repository
-from .knowledge_base import graph, urls
+from .knowledge_base import graph, urls, type_mappings
 from networkx.algorithms import shortest_path
 import networkx
-from networkx.algorithms.tree import minimum_spanning_tree
+from networkx.algorithms.dag import topological_sort
 import itertools
+import functools
 
 TEntity = T.TypeVar("TEntity", bound=Enum)
 TConfig = T.TypeVar("TConfig")
@@ -77,6 +78,18 @@ class SparqlQueryBuilder(abc.ABC, T.Generic[TConfig]):
             )
         ]
 
+        topo_order = topological_sort(knowledge_graph)
+        ordered_contexts = list(
+            functools.reduce(
+                lambda l, node: l + [type(node)] if type(node) not in l else l,
+                topo_order,
+                [],
+            )
+        )
+        ordering = {
+            type_mappings[t]: order for (order, t) in enumerate(ordered_contexts)
+        }
+
         graph_pattern_dict = {
             repository: SQ.SimpleGraphPattern(
                 [recipe.recipe_constructor(mapping) for recipe in recipes]
@@ -88,7 +101,9 @@ class SparqlQueryBuilder(abc.ABC, T.Generic[TConfig]):
             pattern
             if repository == self.repository
             else SQ.ServiceGraphPattern(urls[repository], pattern)
-            for (repository, pattern) in graph_pattern_dict.items()
+            for (repository, pattern) in sorted(
+                graph_pattern_dict.items(), key=lambda kv: ordering[kv[0]]
+            )
         ]
         return SQ.SelectQuery(
             self.prefixes,
