@@ -17,8 +17,7 @@ TConfig = T.TypeVar("TConfig")
 @dataclass
 class SingleRecipe(T.Generic[TEntity]):
     source: TEntity
-    query_builder: T.Callable[[SQ.Variable, SQ.Variable],
-                              SQ.GraphPattern | SQ.Triplet]
+    query_builder: T.Callable[[SQ.Variable, SQ.Variable], SQ.GraphPattern | SQ.Triplet]
 
 
 class SparqlQueryBuilder(abc.ABC, T.Generic[TConfig]):
@@ -56,38 +55,43 @@ class SparqlQueryBuilder(abc.ABC, T.Generic[TConfig]):
         projected_entities = self._get_entities()
         shortest_paths = shortest_path(graph, source=self.root_entity)
         important_paths = {
-            v: shortest_paths[v]
-            for v in filtering_entities + projected_entities
+            v: shortest_paths[v] for v in filtering_entities + projected_entities
         }
-        edges = [(source, target, graph.get_edge_data(source, target, key=0))
-                 for path in important_paths.values()
-                 for (source, target) in zip(path, path[1:])]
+        edges = [
+            (source, target, graph.get_edge_data(source, target, key=0))
+            for path in important_paths.values()
+            for (source, target) in zip(path, path[1:])
+        ]
         knowledge_graph = networkx.DiGraph()
         knowledge_graph.add_edges_from(edges)
         recipes = [
-            data['recipe'] for (s, t, data) in knowledge_graph.edges(data=True)
+            data["recipe"] for (s, t, data) in knowledge_graph.edges(data=True)
         ] + filters
         recipes.sort(key=lambda r: str(r.repository))
         entities = knowledge_graph.nodes()
         mapping = {e: SQ.Variable(str(e)) for e in entities}
-        recipes_grouped = itertools.groupby(recipes, lambda r: r.repository)
+        recipes_grouped = [
+            (repository, list(recipes))
+            for (repository, recipes) in itertools.groupby(
+                recipes, lambda r: r.repository
+            )
+        ]
 
         graph_pattern_dict = {
             repository: SQ.SimpleGraphPattern(
-                [recipe.recipe_constructor(mapping) for recipe in recipes])
+                [recipe.recipe_constructor(mapping) for recipe in recipes]
+            )
             for (repository, recipes) in recipes_grouped
         }
+
         patterns = [
-            SQ.SimpleGraphPattern([
-                SQ.SelectQuery([], [
-                    mapping[ent] for ent in filter(
-                        lambda e: isinstance(e, self.entity_type) and not e ==
-                        self.root_entity, entities)
-                ], pattern)
-            ]) if repository == self.repository else SQ.ServiceGraphPattern(
-                urls[repository], pattern)
+            pattern
+            if repository == self.repository
+            else SQ.ServiceGraphPattern(urls[repository], pattern)
             for (repository, pattern) in graph_pattern_dict.items()
         ]
-        return SQ.SelectQuery(self.prefixes,
-                              [mapping[ent] for ent in projected_entities],
-                              SQ.SimpleGraphPattern(patterns))
+        return SQ.SelectQuery(
+            self.prefixes,
+            [mapping[ent] for ent in projected_entities],
+            SQ.SimpleGraphPattern(patterns),
+        )
