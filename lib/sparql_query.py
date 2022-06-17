@@ -132,22 +132,6 @@ class BindExpression(GraphPattern):
         return [self.get_pretty_text()]
 
 
-class UnionGraphPattern(GraphPattern):
-    def __init__(self, pattern_list: T.List[GraphPattern]):
-        self.patterns = pattern_list
-
-    def __str__(self) -> str:
-        return self.get_pretty_text()
-
-    def get_pretty_text(self) -> str:
-        return os.linesep.join(self.get_lines())
-
-    def get_lines(self) -> T.Iterable[str]:
-        return itertools.accumulate(
-            map(lambda p: p.get_lines, self.patterns), lambda l, nl: l + ["UNION"] + nl
-        )
-
-
 class FilterExpression(GraphPattern):
     def __init__(self, in_vars: T.Sequence[Variable], expr: str):
         self.in_vars = in_vars
