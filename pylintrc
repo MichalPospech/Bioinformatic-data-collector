@@ -267,7 +267,13 @@ signature-mutators=click.decorators.option,
                    click.decorators.version_option,
                    click.decorators.help_option,
                    click.decorators.pass_context,
-                   click.decorators.confirmation_option
+                   click.decorators.confirmation_option,
+                   asyncclick.decorators.option,
+                   asyncclick.decorators.argument,
+                   asyncclick.decorators.version_option,
+                   asyncclick.decorators.help_option,
+                   asyncclick.decorators.pass_context,
+                   asyncclick.decorators.confirmation_option
 
 
 [FORMAT]

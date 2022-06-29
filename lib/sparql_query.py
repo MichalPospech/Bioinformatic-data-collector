@@ -1,8 +1,8 @@
 import typing as T
 import itertools as IT
 import abc
-import itertools
 import os
+import functools as FT
 
 
 class Variable:
@@ -64,6 +64,26 @@ class SimpleGraphPattern(GraphPattern):
         for l in lines:
             yield l
         yield "}"
+
+
+class Union(GraphPattern):
+    def __init__(self, patterns: T.Sequence[GraphPattern | Triplet]):
+        self.patterns = patterns
+
+    def __str__(self) -> str:
+        return self.get_pretty_text()
+
+    def get_pretty_text(self) -> str:
+        return os.linesep.join(self.get_lines())
+
+    def get_lines(self) -> T.Iterable[str]:
+        return FT.reduce(
+            lambda l, pattern: IT.chain(
+                l, ["UNION"], [line for line in pattern.get_lines()]
+            ),
+            self.patterns[1:],
+            self.patterns[0].get_lines(),
+        )
 
 
 class OptionalGraphPattern(GraphPattern):

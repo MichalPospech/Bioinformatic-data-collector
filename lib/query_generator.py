@@ -43,9 +43,6 @@ class SparqlQueryBuilder(abc.ABC, T.Generic[TConfig]):
     def _get_filtering_recipes(self) -> T.List[Recipe]:
         pass
 
-    def _get_variable_mappings(self) -> T.Dict[TEntity, SQ.Variable]:
-        pass
-
     @abc.abstractmethod
     def _get_entities(self) -> T.List[TEntity]:
         pass
