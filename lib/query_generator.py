@@ -7,12 +7,18 @@ from .common import SparqlEntity, Recipe, Repository
 from .knowledge_base import graph, urls, type_mappings
 from networkx.algorithms import shortest_path
 import networkx
-from networkx.algorithms.dag import topological_sort
+from networkx.algorithms.dag import lexicographical_topological_sort
 import itertools
 import functools
 
 TEntity = T.TypeVar("TEntity", bound=Enum)
 TConfig = T.TypeVar("TConfig")
+
+
+class QueryContext:
+    repository: Repository
+    inputs: T.List[TEntity] = []
+    entities: T.List[TEntity] = []
 
 
 @dataclass
@@ -48,10 +54,10 @@ class SparqlQueryBuilder(abc.ABC, T.Generic[TConfig]):
         pass
 
     def get_query(self) -> SQ.SelectQuery:
+        shortest_paths = shortest_path(graph, source=self.root_entity)
         filters = self._get_filtering_recipes()
         filtering_entities = [e for f in filters for e in f.required_entities]
         projected_entities = self._get_entities()
-        shortest_paths = shortest_path(graph, source=self.root_entity)
         important_paths = {
             v: shortest_paths[v] for v in filtering_entities + projected_entities
         }
@@ -60,50 +66,11 @@ class SparqlQueryBuilder(abc.ABC, T.Generic[TConfig]):
             for path in important_paths.values()
             for (source, target) in zip(path, path[1:])
         ]
+
         knowledge_graph = networkx.DiGraph()
         knowledge_graph.add_edges_from(edges)
         recipes = [
             data["recipe"] for (s, t, data) in knowledge_graph.edges(data=True)
         ] + filters
-        recipes.sort(key=lambda r: str(r.repository))
-        entities = knowledge_graph.nodes()
-        mapping = {e: SQ.Variable(str(e)) for e in entities}
-        recipes_grouped = [
-            (repository, list(recipes))
-            for (repository, recipes) in itertools.groupby(
-                recipes, lambda r: r.repository
-            )
-        ]
 
-        topo_order = topological_sort(knowledge_graph)
-        ordered_contexts = list(
-            functools.reduce(
-                lambda l, node: l + [type(node)] if type(node) not in l else l,
-                topo_order,
-                [],
-            )
-        )
-        ordering = {
-            type_mappings[t]: order for (order, t) in enumerate(ordered_contexts)
-        }
-
-        graph_pattern_dict = {
-            repository: SQ.SimpleGraphPattern(
-                [recipe.recipe_constructor(mapping) for recipe in recipes]
-            )
-            for (repository, recipes) in recipes_grouped
-        }
-
-        patterns = [
-            pattern
-            if repository == self.repository
-            else SQ.ServiceGraphPattern(urls[repository], pattern)
-            for (repository, pattern) in sorted(
-                graph_pattern_dict.items(), key=lambda kv: ordering[kv[0]]
-            )
-        ]
-        return SQ.SelectQuery(
-            self.prefixes,
-            [mapping[ent] for ent in projected_entities],
-            SQ.SimpleGraphPattern(patterns),
-        )
+        topo_order = lexicographical_topological_sort(knowledge_graph)
