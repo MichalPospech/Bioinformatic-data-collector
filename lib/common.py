@@ -22,11 +22,12 @@ class Repository(Enum):
 class Recipe:
     repository: Repository
     required_entities: T.List[SparqlEntity]
+    produced_entity: SparqlEntity
     recipe_constructor: T.Callable[[T.Dict[SparqlEntity, SQ.Variable]],
                                    T.Union[SQ.Triplet, SQ.GraphPattern]]
 
 
 def create_triplet_recipe(in_ent: SparqlEntity, out_ent: SparqlEntity,
                           predicate: str, repository: Repository) -> Recipe:
-    return Recipe(repository, [out_ent, in_ent],
+    return Recipe(repository, [in_ent], out_ent,
                   lambda d: SQ.Triplet(d[in_ent], predicate, d[out_ent]))

@@ -15,16 +15,19 @@ TEntity = T.TypeVar("TEntity", bound=Enum)
 TConfig = T.TypeVar("TConfig")
 
 
+@dataclass
 class QueryContext:
     repository: Repository
-    inputs: T.List[TEntity] = []
-    entities: T.List[TEntity] = []
+    inputs: T.List[TEntity]
+    entities: T.List[TEntity]
+    filters: T.List[Recipe]
 
 
 @dataclass
 class SingleRecipe(T.Generic[TEntity]):
     source: TEntity
-    query_builder: T.Callable[[SQ.Variable, SQ.Variable], SQ.GraphPattern | SQ.Triplet]
+    query_builder: T.Callable[[SQ.Variable, SQ.Variable],
+                              SQ.GraphPattern | SQ.Triplet]
 
 
 class SparqlQueryBuilder(abc.ABC, T.Generic[TConfig]):
@@ -59,13 +62,12 @@ class SparqlQueryBuilder(abc.ABC, T.Generic[TConfig]):
         filtering_entities = [e for f in filters for e in f.required_entities]
         projected_entities = self._get_entities()
         important_paths = {
-            v: shortest_paths[v] for v in filtering_entities + projected_entities
+            v: shortest_paths[v]
+            for v in filtering_entities + projected_entities
         }
-        edges = [
-            (source, target, graph.get_edge_data(source, target, key=0))
-            for path in important_paths.values()
-            for (source, target) in zip(path, path[1:])
-        ]
+        edges = [(source, target, graph.get_edge_data(source, target, key=0))
+                 for path in important_paths.values()
+                 for (source, target) in zip(path, path[1:])]
 
         knowledge_graph = networkx.DiGraph()
         knowledge_graph.add_edges_from(edges)
@@ -73,4 +75,38 @@ class SparqlQueryBuilder(abc.ABC, T.Generic[TConfig]):
             data["recipe"] for (s, t, data) in knowledge_graph.edges(data=True)
         ] + filters
 
-        topo_order = lexicographical_topological_sort(knowledge_graph)
+        topo_order = list(
+            lexicographical_topological_sort(knowledge_graph,
+                                             lambda r: str(type(r))))
+
+        def group_recipes(l, r):
+            if len(l) == 0:
+                return [(type(r), [r])]
+            else:
+                previous_t, previous_l = l[-1]
+                if type(r) == previous_t:
+                    l[-1] = (previous_t, previous_l + [r])
+                else:
+                    l.append((type(r), [r]))
+                return l
+
+        def create_context(t: T.Type, entities: T.List[TEntity]):
+            entity_set = set(entities)
+            context_recipes = [
+                r for r in recipes if r.produced_entity in entity_set
+            ]
+            dependencies = [
+                e for recipe in context_recipes
+                for e in recipe.required_entities if e not in entity_set
+            ]
+            context_filters = [
+                f for f in filters
+                if len(entity_set.intersection(f.required_entities)) == len(
+                    f.required_entities)
+            ]
+            return QueryContext(type_mappings[t], dependencies, entities,
+                                context_filters)
+
+        grouped_recipes = list(functools.reduce(group_recipes, topo_order, []))
+        contexts = list(map(lambda x: create_context(*x), grouped_recipes))
+        print(contexts)
