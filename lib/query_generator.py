@@ -30,6 +30,7 @@ class SubQueryContext:
     inputs: T.List[TEntity]
     entities: T.List[TEntity]
     filters: T.List[Recipe]
+    recipes: T.List[Recipe]
     url: str
 
 
@@ -38,7 +39,6 @@ class QueryContext:
     subquery_contexts: T.List[SubQueryContext]
     prefixes: T.List[SQ.Prefix]
     mapping: T.Dict[SparqlEntity, SQ.Variable]
-    inverse_mapping: T.Dict
 
 
 @dataclass
@@ -88,6 +88,7 @@ class SparqlQueryBuilder(abc.ABC, T.Generic[TConfig]):
         topo_order = list(
             lexicographical_topological_sort(knowledge_graph,
                                              lambda r: str(type(r))))
+        mapping = {e: SQ.Variable(str(e)) for e in topo_order}
 
         def group_recipes(l, r):
             if len(l) == 0:
@@ -115,13 +116,13 @@ class SparqlQueryBuilder(abc.ABC, T.Generic[TConfig]):
                     f.required_entities)
             ]
             return SubQueryContext(
-                type_mappings[t],
                 dependencies,
                 entities,
                 context_filters,
+                context_recipes,
                 global_prefixes,
             )
 
         grouped_recipes = list(functools.reduce(group_recipes, topo_order, []))
         contexts = list(map(lambda x: create_context(*x), grouped_recipes))
-        print(contexts)
+        return QueryContext(contexts, global_prefixes, mapping)
