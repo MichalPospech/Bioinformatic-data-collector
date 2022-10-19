@@ -25,6 +25,19 @@ knowledge_graph = MultiDiGraph()
 knowledge_graph.add_nodes_from(RheaEntity)
 knowledge_graph.add_edges_from(
     [
+        (
+            RheaEntity.START,
+            RheaEntity.REACTION,
+            {
+                "recipe": Recipe(
+                    Repository.RHEA,
+                    [RheaEntity.REACTION],
+                    lambda d: SQ.Triplet(
+                        d[RheaEntity.REACTION], "rdfs:subClassOf", "rh:Reaction"
+                    ),
+                )
+            },
+        ),
         create_rhea_triplet_edge(
             RheaEntity.REACTION, RheaEntity.REACTION_SIDE, "rh:side"
         ),
@@ -42,3 +55,16 @@ knowledge_graph.add_edges_from(
         create_rhea_triplet_edge(RheaEntity.CHEBI, RheaEntity.SMILES, "chebi:smiles"),
     ]
 )
+
+
+class RheaFilters:
+    @classmethod
+    def reaction_filter(cls, reaction_ids: T.List[str]) -> Recipe:
+        return Recipe(
+            Repository.UNIPROT,
+            [RheaEntity.REACTION],
+            lambda d: SQ.InlineData(
+                d[RheaEntity.REACTION],
+                map(lambda reaction_id: f"<http://rdf.rhea-db.org/{reaction_id}>"),
+            ),
+        )

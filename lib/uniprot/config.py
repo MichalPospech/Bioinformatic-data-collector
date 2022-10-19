@@ -12,9 +12,6 @@ class Feature(Enum):
     NAME = "Name"
     SEQUENCE = "Sequence"
     REACTION = "Reaction"
-    REACTION_PARTICIPANT = "ReactionParticipant"
-    CHEBI = "Chebi"
-    SMILES = "Smiles"
 
 
 @DJ.dataclass_json(letter_case=DJ.LetterCase.CAMEL)

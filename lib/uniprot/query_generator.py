@@ -1,5 +1,5 @@
 from ..query_generator import SparqlQueryBuilder
-from . import config as UC
+from . import config as C
 import typing as T
 from ..common import SparqlEntity, Recipe, Repository
 from .entities import UniprotEntity
@@ -7,23 +7,20 @@ from ..rhea.entities import RheaEntity
 from .representation import UniprotFilters
 
 
-class UniprotQueryBuilder(SparqlQueryBuilder[UC.UniprotSearchConfig]):
+class UniprotQueryBuilder(SparqlQueryBuilder[C.UniprotSearchConfig]):
     entity_mappings = {
-        UC.Feature.NAME: UniprotEntity.FULL_NAME,
-        UC.Feature.PROTEIN: UniprotEntity.PROTEIN,
-        UC.Feature.PROTEIN_ID: UniprotEntity.PROTEIN_ID,
-        UC.Feature.SEQUENCE: UniprotEntity.SEQUENCE,
-        UC.Feature.REACTION: RheaEntity.REACTION,
-        UC.Feature.REACTION_PARTICIPANT: RheaEntity.COMPOUND,
-        UC.Feature.CHEBI: RheaEntity.CHEBI,
-        UC.Feature.SMILES: RheaEntity.SMILES,
+        C.Feature.NAME: UniprotEntity.FULL_NAME,
+        C.Feature.PROTEIN: UniprotEntity.PROTEIN,
+        C.Feature.PROTEIN_ID: UniprotEntity.PROTEIN_ID,
+        C.Feature.SEQUENCE: UniprotEntity.SEQUENCE,
+        C.Feature.REACTION: RheaEntity.REACTION,
     }
 
     entity_type = UniprotEntity
     root_entity = UniprotEntity.START
     repository = Repository.UNIPROT
 
-    def __init__(self, config: UC.UniprotSearchConfig) -> None:
+    def __init__(self, config: C.UniprotSearchConfig) -> None:
         super().__init__(config, True)
 
     def _get_entities(self) -> T.List[SparqlEntity]:
