@@ -2,12 +2,9 @@ import abc
 import lib.sparql_query as SQ
 import typing as T
 from enum import Enum
-from dataclasses import dataclass
 from .common import SparqlEntity, Recipe, Repository
-from .knowledge_base import knowledge_graphs, urls, type_mappings
+from .knowledge_base import knowledge_graphs
 import networkx
-import itertools
-import functools
 
 TEntity = T.TypeVar("TEntity", bound=Enum)
 TConfig = T.TypeVar("TConfig")
@@ -60,4 +57,16 @@ class SparqlQueryBuilder(abc.ABC, T.Generic[TConfig]):
 
         entities = knowledge_graph.nodes()
         mapping = {e: SQ.Variable(str(e)) for e in entities}
-        recipe_patterns = []
+        recipe_patterns = [
+            knowledge_graph.get_edge_data(u, v)["recipe"].recipe_constructor(mapping)
+            for (u, v) in networkx.algorithms.dfs_edges(
+                knowledge_graph, self.root_entity
+            )
+        ]
+        filter_patterns = [f.recipe_constructor(mapping) for f in filters]
+
+        return SQ.SelectQuery(
+            self.prefixes,
+            [mapping[e] for e in projected_entities],
+            SQ.SimpleGraphPattern(recipe_patterns + filter_patterns),
+        )

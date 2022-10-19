@@ -114,6 +114,12 @@ class InlineData(GraphPattern):
     def get_pretty_text(self) -> str:
         return os.linesep.join(self.get_lines())
 
+    def get_lines(self) -> T.Iterable[str]:
+        yield "VALUES {} IN {".format(self.variable.get_pretty_text())
+        for v in self.values:
+            yield v
+        yield "}"
+
 
 class ServiceGraphPattern(GraphPattern):
     def __init__(self, service: str, pattern: GraphPattern):
