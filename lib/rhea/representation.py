@@ -65,6 +65,11 @@ class RheaFilters:
             [RheaEntity.REACTION],
             lambda d: SQ.InlineData(
                 d[RheaEntity.REACTION],
-                map(lambda reaction_id: f"<http://rdf.rhea-db.org/{reaction_id}>"),
+                list(
+                    map(
+                        lambda reaction_id: f"<http://rdf.rhea-db.org/{reaction_id}>",
+                        reaction_ids,
+                    )
+                ),
             ),
         )

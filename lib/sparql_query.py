@@ -115,9 +115,9 @@ class InlineData(GraphPattern):
         return os.linesep.join(self.get_lines())
 
     def get_lines(self) -> T.Iterable[str]:
-        yield "VALUES {} IN {".format(self.variable.get_pretty_text())
+        yield "VALUES {} {{".format(self.variable.get_pretty_text())
         for v in self.values:
-            yield v
+            yield 4 * " " + v
         yield "}"
 
 

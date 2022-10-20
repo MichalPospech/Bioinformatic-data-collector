@@ -4,5 +4,10 @@
             "Reaction",
             "Smiles"
         ]
+    },
+    "dataFilter": {
+        "reactions": [
+            "10100"
+        ]
     }
 }
