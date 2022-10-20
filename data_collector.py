@@ -1,3 +1,4 @@
+from ast import match_case
 import click
 import pathlib
 import requests
@@ -89,6 +90,7 @@ def run(
     out_path: T.Optional[pathlib.Path],
     print_query: bool,
 ) -> None:
+    query: SelectQuery = None
     if repository == "uniprot":
         with open(config_path, encoding="utf-8") as config_file:
             json_config = json.load(config_file)

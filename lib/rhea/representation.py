@@ -45,6 +45,9 @@ knowledge_graph.add_edges_from(
             RheaEntity.REACTION_SIDE, RheaEntity.PARTICIPANT, "rh:contains"
         ),
         create_rhea_triplet_edge(
+            RheaEntity.REACTION_SIDE, RheaEntity.REACTION_SIDE_ORDER, "rh:curatedOrder"
+        ),
+        create_rhea_triplet_edge(
             RheaEntity.PARTICIPANT, RheaEntity.COMPOUND, "rh:compound"
         ),
         create_rhea_triplet_edge(

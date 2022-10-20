@@ -2,7 +2,8 @@
     "dataSelector": {
         "columns": [
             "Reaction",
-            "Smiles"
+            "Smiles",
+            "ReactionSide"
         ]
     },
     "dataFilter": {

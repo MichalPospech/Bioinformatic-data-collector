@@ -11,6 +11,7 @@ class RheaQueryBuilder(SparqlQueryBuilder[C.RheaSearchConfig]):
     entity_mappings = {
         C.Feature.REACTION: RheaEntity.REACTION,
         C.Feature.REACTION_PARTICIPANT: RheaEntity.COMPOUND,
+        C.Feature.REACTION_SIDE: RheaEntity.REACTION_SIDE_ORDER,
         C.Feature.CHEBI: RheaEntity.CHEBI,
         C.Feature.SMILES: RheaEntity.SMILES,
     }
