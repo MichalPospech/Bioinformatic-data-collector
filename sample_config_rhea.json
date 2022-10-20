@@ -1,0 +1,8 @@
+{
+    "dataSelector": {
+        "columns": [
+            "Reaction",
+            "Smiles"
+        ]
+    }
+}

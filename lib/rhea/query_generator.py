@@ -4,7 +4,7 @@ import typing as T
 from ..common import SparqlEntity, Recipe, Repository
 from .entities import RheaEntity
 from ..rhea.entities import RheaEntity
-from .representation import RheaFilters, UniprotFilters
+from .representation import RheaFilters
 
 
 class RheaQueryBuilder(SparqlQueryBuilder[C.RheaSearchConfig]):

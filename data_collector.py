@@ -4,13 +4,20 @@ import requests
 import pandas as pd
 import io
 import typing as T
-from enum import Enum
+from enum import Enum, auto
 import json
 
 import lib.query_generator
+from lib.rhea.config import RheaSearchConfig
+from lib.rhea.query_generator import RheaQueryBuilder
 from lib.sparql_query import SelectQuery
 import lib.uniprot.config as UC
 from lib.uniprot.query_generator import UniprotQueryBuilder
+
+
+class Repository(Enum):
+    RHEA = auto()
+    UNIPROT = auto()
 
 
 def cb_validate_path(
@@ -67,19 +74,32 @@ def save_data(data: pd.DataFrame, path: pathlib.Path) -> None:
     "config_path",
     type=click.Path(exists=True, file_okay=True),
 )
+@click.argument(
+    "repository", type=click.Choice(["uniprot", "rhea"], case_sensitive=False)
+)
 @click.option(
     "--out-path",
     type=click.Path(path_type=pathlib.Path),
     callback=cb_validate_path,
     help="Path where to save result of the query, must have either csv or xlsx extension",
 )
-def uniprot(
-    config_path: pathlib.Path, out_path: T.Optional[pathlib.Path], print_query: bool
+def run(
+    config_path: pathlib.Path,
+    repository: str,
+    out_path: T.Optional[pathlib.Path],
+    print_query: bool,
 ) -> None:
-    with open(config_path, encoding="utf-8") as config_file:
-        json_config = json.load(config_file)
-    config = UC.UniprotSearchConfig.schema().load(json_config)
-    query = get_query(config, UniprotQueryBuilder)
+    if repository == "uniprot":
+        with open(config_path, encoding="utf-8") as config_file:
+            json_config = json.load(config_file)
+        config = UC.UniprotSearchConfig.schema().load(json_config)
+        query = get_query(config, UniprotQueryBuilder)
+    if repository == "rhea":
+        with open(config_path, encoding="utf-8") as config_file:
+            json_config = json.load(config_file)
+        config = RheaSearchConfig.schema().load(json_config)
+        query = get_query(config, RheaQueryBuilder)
+
     if print_query:
         print(query.get_pretty_text())
     if out_path:
@@ -88,4 +108,4 @@ def uniprot(
 
 
 if __name__ == "__main__":
-    uniprot()
+    run()
