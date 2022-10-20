@@ -162,11 +162,11 @@ class UniprotFilters:
         return Recipe(
             Repository.UNIPROT,
             [UniprotEntity.TAXON_FILTERING],
-            lambda d: SQ.FilterExpression(
-                [d[UniprotEntity.TAXON_FILTERING]] * len(taxa),
-                " || ".join(
+            lambda d: SQ.InlineData(
+                d[UniprotEntity.TAXON_FILTERING],
+                list(
                     map(
-                        lambda taxon: f"{{}} = <http://purl.uniprot.org/taxonomy/{taxon}>",
+                        lambda taxon: f"<http://purl.uniprot.org/taxonomy/{taxon}>",
                         taxa,
                     )
                 ),
@@ -178,11 +178,11 @@ class UniprotFilters:
         return Recipe(
             Repository.UNIPROT,
             [UniprotEntity.PFAM],
-            lambda d: SQ.FilterExpression(
-                [d[UniprotEntity.PFAM]] * len(pfams),
-                " || ".join(
+            lambda d: SQ.InlineData(
+                d[UniprotEntity.PFAM],
+                list(
                     map(
-                        lambda pfam: f"{{}} = <http://purl.uniprot.org/pfam/{pfam}>",
+                        lambda pfam: f"<http://purl.uniprot.org/pfam/{pfam}>",
                         pfams,
                     )
                 ),
@@ -194,11 +194,11 @@ class UniprotFilters:
         return Recipe(
             Repository.UNIPROT,
             [UniprotEntity.SUPFAM],
-            lambda d: SQ.FilterExpression(
-                [d[UniprotEntity.SUPFAM]] * len(supfams),
-                " || ".join(
+            lambda d: SQ.InlineData(
+                d[UniprotEntity.SUPFAM],
+                list(
                     map(
-                        lambda supfam: f"{{}} = <http://purl.uniprot.org/supfams/{supfam}>",
+                        lambda pfam: f"<http://purl.uniprot.org/supfam/{pfam}>",
                         supfams,
                     )
                 ),

@@ -5,10 +5,5 @@
             "Smiles",
             "ReactionSide"
         ]
-    },
-    "dataFilter": {
-        "reactions": [
-            "10100"
-        ]
     }
 }

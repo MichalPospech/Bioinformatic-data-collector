@@ -32,16 +32,17 @@ class UniprotQueryBuilder(SparqlQueryBuilder[C.UniprotSearchConfig]):
         filters: T.List[Recipe] = []
 
         if self.config.data_filter.pfams:
-            filters.append(UniprotFilters.pfam_filter(self.config.data_filter.pfams))
+            filters.append(
+                UniprotFilters.pfam_filter(self.config.data_filter.pfams))
         if self.config.data_filter.reviewed:
             filters.append(
-                UniprotFilters.reviewed_filter(self.config.data_filter.reviewed)
-            )
+                UniprotFilters.reviewed_filter(
+                    self.config.data_filter.reviewed))
         if self.config.data_filter.taxa:
-            filters.append(UniprotFilters.taxa_filter(self.config.data_filter.taxa))
+            filters.append(
+                UniprotFilters.taxa_filter(self.config.data_filter.taxa))
         if self.config.data_filter.supfams:
             filters.append(
-                UniprotFilters.supfam_filter(self.config.data_filter.supfams)
-            )
+                UniprotFilters.supfam_filter(self.config.data_filter.supfams))
 
         return filters
