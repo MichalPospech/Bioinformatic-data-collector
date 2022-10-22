@@ -1,0 +1,9 @@
+{
+    "dataSelector": {
+        "columns": [
+            "Reaction",
+            "Smiles",
+            "ReactionSide"
+        ]
+    }
+}
