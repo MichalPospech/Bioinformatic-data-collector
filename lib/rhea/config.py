@@ -3,7 +3,7 @@ import typing as T
 import dataclasses_json as DJ
 from enum import Enum
 
-URL = "https://sparql.rhea.org"
+URL = "https://sparql.rhea-db.org/sparql"
 
 
 class Feature(Enum):

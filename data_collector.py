@@ -9,7 +9,7 @@ from enum import Enum, auto
 import json
 
 import lib.query_generator
-from lib.rhea.config import RheaSearchConfig
+import lib.rhea.config as RC
 from lib.rhea.query_generator import RheaQueryBuilder
 from lib.sparql_query import SelectQuery
 import lib.uniprot.config as UC
@@ -91,6 +91,7 @@ def run(
     print_query: bool,
 ) -> None:
     query: SelectQuery = None
+    url: str = None
     if repository == "uniprot":
         with open(config_path, encoding="utf-8") as config_file:
             json_config = json.load(config_file)
@@ -99,13 +100,13 @@ def run(
     if repository == "rhea":
         with open(config_path, encoding="utf-8") as config_file:
             json_config = json.load(config_file)
-        config = RheaSearchConfig.schema().load(json_config)
-        query = get_query(config, RheaQueryBuilder)
+        config = RC.RheaSearchConfig.schema().load(json_config)
+        query, url = get_query(config, RheaQueryBuilder), RC.URL
 
     if print_query:
         print(query.get_pretty_text())
     if out_path:
-        data = collect_data(query, UC.URL)
+        data = collect_data(query, url)
         save_data(data, out_path)
 
 
