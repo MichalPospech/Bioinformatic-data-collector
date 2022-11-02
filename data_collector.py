@@ -1,4 +1,3 @@
-from ast import match_case
 import click
 import pathlib
 import requests
@@ -8,12 +7,13 @@ import typing as T
 from enum import Enum, auto
 import json
 
-import lib.query_generator
-import lib.rhea.config as RC
-from lib.rhea.query_generator import RheaQueryBuilder
-from lib.sparql_query import SelectQuery
-import lib.uniprot.config as UC
-from lib.uniprot.query_generator import UniprotQueryBuilder
+import bioinfdatacollector.query_generator as QueryGenerator
+
+import bioinfdatacollector.rhea.config as RC
+from bioinfdatacollector.rhea.query_generator import RheaQueryBuilder
+from bioinfdatacollector.sparql_query import SelectQuery
+import bioinfdatacollector.uniprot.config as UC
+from bioinfdatacollector.uniprot.query_generator import UniprotQueryBuilder
 
 
 class Repository(Enum):
@@ -48,7 +48,7 @@ TConfig = T.TypeVar("TConfig")
 def get_query(
     config: TConfig,
     query_builder_ctor: T.Callable[
-        [TConfig], lib.query_generator.SparqlQueryBuilder[TConfig]
+        [TConfig], QueryGenerator.SparqlQueryBuilder[TConfig]
     ],
 ) -> SelectQuery:
     builder = query_builder_ctor(config)

@@ -2,7 +2,7 @@ from .entities import UniprotEntity
 from ..rhea.entities import RheaEntity
 from networkx import MultiDiGraph
 from ..common import Recipe, Repository, create_triplet_recipe, SparqlEntity
-import lib.sparql_query as SQ
+import bioinfdatacollector.sparql_query as SQ
 import typing as T
 
 

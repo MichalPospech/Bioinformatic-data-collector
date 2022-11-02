@@ -1,5 +1,5 @@
 import abc
-import lib.sparql_query as SQ
+import bioinfdatacollector.sparql_query as SQ
 import typing as T
 from enum import Enum
 from .common import SparqlEntity, Recipe, Repository
