@@ -102,6 +102,9 @@ knowledge_graph.add_edges_from(
             },
         ),
         create_uniprot_triplet_edege(
+            UniprotEntity.ORGANISM, UniprotEntity.ORGANISM_NAME, "up:scientificName"
+        ),
+        create_uniprot_triplet_edege(
             UniprotEntity.SEQUENCE_OBJECT, UniprotEntity.SEQUENCE, "rdf:value"
         ),
         (
@@ -120,6 +123,124 @@ knowledge_graph.add_edges_from(
                             ),
                             SQ.Triplet(
                                 d[UniprotEntity.PFAM],
+                                "up:database",
+                                "<http://purl.uniprot.org/database/Pfam>",
+                            ),
+                        ]
+                    ),
+                )
+            },
+        ),
+        (
+            UniprotEntity.ORGANISM,
+            UniprotEntity.KINGDOM,
+            {
+                "recipe": Recipe(
+                    Repository.UNIPROT,
+                    [UniprotEntity.ORGANISM, UniprotEntity.KINGDOM],
+                    lambda d: SQ.OptionalGraphPattern(
+                        SQ.SimpleGraphPattern(
+                            [
+                                SQ.Triplet(
+                                    d[UniprotEntity.ORGANISM],
+                                    "rdfs:subClassOf",
+                                    d[UniprotEntity.KINGDOM],
+                                ),
+                                SQ.Triplet(
+                                    d[UniprotEntity.KINGDOM],
+                                    "up:rank",
+                                    "<http://purl.uniprot.org/core/Kingdom>",
+                                ),
+                            ]
+                        )
+                    ),
+                )
+            },
+        ),
+        (
+            UniprotEntity.ORGANISM,
+            UniprotEntity.SUPERKINGDOM,
+            {
+                "recipe": Recipe(
+                    Repository.UNIPROT,
+                    [UniprotEntity.ORGANISM, UniprotEntity.SUPERKINGDOM],
+                    lambda d: SQ.OptionalGraphPattern(
+                        SQ.SimpleGraphPattern(
+                            [
+                                SQ.Triplet(
+                                    d[UniprotEntity.ORGANISM],
+                                    "rdfs:subClassOf",
+                                    d[UniprotEntity.SUPERKINGDOM],
+                                ),
+                                SQ.Triplet(
+                                    d[UniprotEntity.SUPERKINGDOM],
+                                    "up:rank",
+                                    "<http://purl.uniprot.org/core/Superkingdom>",
+                                ),
+                            ]
+                        )
+                    ),
+                )
+            },
+        ),
+        (
+            UniprotEntity.SUPERKINGDOM,
+            UniprotEntity.SUPERKINGDOM_NAME,
+            {
+                "recipe": Recipe(
+                    Repository.UNIPROT,
+                    [UniprotEntity.SUPERKINGDOM, UniprotEntity.SUPERKINGDOM_NAME],
+                    lambda d: SQ.OptionalGraphPattern(
+                        SQ.SimpleGraphPattern(
+                            [
+                                SQ.Triplet(
+                                    d[UniprotEntity.SUPERKINGDOM],
+                                    "rdfs:scientificName",
+                                    d[UniprotEntity.SUPERKINGDOM_NAME],
+                                ),
+                            ]
+                        )
+                    ),
+                )
+            },
+        ),
+        (
+            UniprotEntity.KINGDOM,
+            UniprotEntity.KINGDOM_NAME,
+            {
+                "recipe": Recipe(
+                    Repository.UNIPROT,
+                    [UniprotEntity.KINGDOM, UniprotEntity.KINGDOM_NAME],
+                    lambda d: SQ.OptionalGraphPattern(
+                        SQ.SimpleGraphPattern(
+                            [
+                                SQ.Triplet(
+                                    d[UniprotEntity.KINGDOM],
+                                    "up:scientificName",
+                                    d[UniprotEntity.KINGDOM_NAME],
+                                ),
+                            ]
+                        )
+                    ),
+                )
+            },
+        ),
+        (
+            UniprotEntity.PROTEIN,
+            UniprotEntity.PFAM_FILTERING,
+            {
+                "recipe": Recipe(
+                    Repository.UNIPROT,
+                    [UniprotEntity.PROTEIN, UniprotEntity.PFAM_FILTERING],
+                    lambda d: SQ.SimpleGraphPattern(
+                        [
+                            SQ.Triplet(
+                                d[UniprotEntity.PROTEIN],
+                                "rdfs:seeAlso",
+                                d[UniprotEntity.PFAM_FILTERING],
+                            ),
+                            SQ.Triplet(
+                                d[UniprotEntity.PFAM_FILTERING],
                                 "up:database",
                                 "<http://purl.uniprot.org/database/Pfam>",
                             ),

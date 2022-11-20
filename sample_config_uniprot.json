@@ -3,7 +3,9 @@
         "columns": [
             "ProteinId",
             "Protein",
-            "Reaction"
+            "Name",
+            "Reaction",
+            "Kingdom"
         ]
     },
     "dataFilter": {

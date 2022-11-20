@@ -3,7 +3,13 @@
         "columns": [
             "Reaction",
             "Smiles",
+            "Chebi",
             "ReactionSide"
+        ]
+    },
+    "dataFilter": {
+        "reactions": [
+            "10000"
         ]
     }
 }
