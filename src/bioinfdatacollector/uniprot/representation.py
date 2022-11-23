@@ -195,7 +195,7 @@ knowledge_graph.add_edges_from(
                             [
                                 SQ.Triplet(
                                     d[UniprotEntity.SUPERKINGDOM],
-                                    "rdfs:scientificName",
+                                    "up:scientificName",
                                     d[UniprotEntity.SUPERKINGDOM_NAME],
                                 ),
                             ]
