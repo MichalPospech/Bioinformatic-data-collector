@@ -17,6 +17,7 @@ class UniprotQueryBuilder(SparqlQueryBuilder[C.UniprotSearchConfig]):
         C.Feature.SUPERKINGDOM: UniprotEntity.SUPERKINGDOM_NAME,
         C.Feature.KINGDOM: UniprotEntity.KINGDOM_NAME,
         C.Feature.ORGANISM: UniprotEntity.ORGANISM_NAME,
+        C.Feature.PFAM: UniprotEntity.PFAM,
     }
 
     entity_type = UniprotEntity

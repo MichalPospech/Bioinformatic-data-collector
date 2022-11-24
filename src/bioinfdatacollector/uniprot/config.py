@@ -15,6 +15,7 @@ class Feature(Enum):
     KINGDOM = "Kingdom"
     SUPERKINGDOM = "Superkingdom"
     ORGANISM = "Organism"
+    PFAM = "Pfam"
 
 
 @DJ.dataclass_json(letter_case=DJ.LetterCase.CAMEL)
