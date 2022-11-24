@@ -55,7 +55,14 @@ class SparqlQueryBuilder(abc.ABC, T.Generic[TConfig]):
         knowledge_graph = networkx.DiGraph()
         knowledge_graph.add_edges_from(edges)
 
-        entities = knowledge_graph.nodes()
+        entities = {
+            e
+            for es in map(
+                lambda e: e[2]["recipe"].required_entities,
+                knowledge_graph.edges(data=True),
+            )
+            for e in es
+        }
         mapping = {e: SQ.Variable(str(e)) for e in entities}
         recipe_patterns = [
             knowledge_graph.get_edge_data(u, v)["recipe"].recipe_constructor(mapping)
