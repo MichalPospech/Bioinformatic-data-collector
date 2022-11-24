@@ -274,9 +274,9 @@ class UniprotFilters:
     def pfam_filter(cls, pfams: T.List[str]) -> Recipe:
         return Recipe(
             Repository.UNIPROT,
-            [UniprotEntity.PFAM],
+            [UniprotEntity.PFAM_FILTERING],
             lambda d: SQ.InlineData(
-                d[UniprotEntity.PFAM],
+                d[UniprotEntity.PFAM_FILTERING],
                 list(
                     map(
                         lambda pfam: f"<http://purl.uniprot.org/pfam/{pfam}>",
