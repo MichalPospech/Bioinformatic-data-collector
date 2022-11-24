@@ -151,16 +151,10 @@ knowledge_graph.add_edges_from(
                                     "up:rank",
                                     "<http://purl.uniprot.org/core/Kingdom>",
                                 ),
-                                SQ.OptionalGraphPattern(
-                                    SQ.SimpleGraphPattern(
-                                        [
-                                            SQ.Triplet(
-                                                d[UniprotEntity.KINGDOM],
-                                                "up:scientificName",
-                                                d[UniprotEntity.KINGDOM_NAME],
-                                            ),
-                                        ]
-                                    )
+                                SQ.Triplet(
+                                    d[UniprotEntity.KINGDOM],
+                                    "up:scientificName",
+                                    d[UniprotEntity.KINGDOM_NAME],
                                 ),
                             ]
                         )
@@ -188,16 +182,10 @@ knowledge_graph.add_edges_from(
                                     "up:rank",
                                     "<http://purl.uniprot.org/core/Superkingdom>",
                                 ),
-                                SQ.OptionalGraphPattern(
-                                    SQ.SimpleGraphPattern(
-                                        [
-                                            SQ.Triplet(
-                                                d[UniprotEntity.SUPERKINGDOM],
-                                                "up:scientificName",
-                                                d[UniprotEntity.SUPERKINGDOM_NAME],
-                                            ),
-                                        ]
-                                    )
+                                SQ.Triplet(
+                                    d[UniprotEntity.SUPERKINGDOM],
+                                    "up:scientificName",
+                                    d[UniprotEntity.SUPERKINGDOM_NAME],
                                 ),
                             ]
                         )
