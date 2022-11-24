@@ -137,7 +137,11 @@ knowledge_graph.add_edges_from(
             {
                 "recipe": Recipe(
                     Repository.UNIPROT,
-                    [UniprotEntity.ORGANISM, UniprotEntity.KINGDOM_NAME],
+                    [
+                        UniprotEntity.ORGANISM,
+                        UniprotEntity.KINGDOM,
+                        UniprotEntity.KINGDOM_NAME,
+                    ],
                     lambda d: SQ.OptionalGraphPattern(
                         SQ.SimpleGraphPattern(
                             [
@@ -168,7 +172,11 @@ knowledge_graph.add_edges_from(
             {
                 "recipe": Recipe(
                     Repository.UNIPROT,
-                    [UniprotEntity.ORGANISM, UniprotEntity.SUPERKINGDOM_NAME],
+                    [
+                        UniprotEntity.ORGANISM,
+                        UniprotEntity.SUPERKINGDOM,
+                        UniprotEntity.SUPERKINGDOM_NAME,
+                    ],
                     lambda d: SQ.OptionalGraphPattern(
                         SQ.SimpleGraphPattern(
                             [
