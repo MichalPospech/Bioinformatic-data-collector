@@ -10,6 +10,7 @@ class Feature(Enum):
     PROTEIN = "Protein"
     PROTEIN_ID = "ProteinId"
     NAME = "Name"
+    SUBMITTED_NAME = "SubmittedName"
     SEQUENCE = "Sequence"
     REACTION = "Reaction"
     KINGDOM = "Kingdom"

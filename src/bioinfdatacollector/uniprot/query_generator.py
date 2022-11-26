@@ -9,7 +9,8 @@ from .representation import UniprotFilters
 
 class UniprotQueryBuilder(SparqlQueryBuilder[C.UniprotSearchConfig]):
     entity_mappings = {
-        C.Feature.NAME: UniprotEntity.FULL_NAME,
+        C.Feature.NAME: UniprotEntity.FULL_RECOMMENDED_NAME,
+        C.Feature.SUBMITTED_NAME: UniprotEntity.FULL_SUBMITTED_NAME,
         C.Feature.PROTEIN: UniprotEntity.PROTEIN,
         C.Feature.PROTEIN_ID: UniprotEntity.PROTEIN_ID,
         C.Feature.SEQUENCE: UniprotEntity.SEQUENCE,

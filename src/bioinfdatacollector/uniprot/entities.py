@@ -4,8 +4,8 @@ from ..common import SparqlEntity
 class UniprotEntity(SparqlEntity):
     START = "start"
     PROTEIN = "protein"
-    FULL_NAME = "full_name"
-    RECOMMENDED_NAME = "recommended_name"
+    FULL_RECOMMENDED_NAME = "full_recommended_name"
+    FULL_SUBMITTED_NAME = "full_submitted_name"
     PROTEIN_ID = "protein_id"
     PFAM = "pfam"
     PFAM_FILTERING = "pfam_filtering"

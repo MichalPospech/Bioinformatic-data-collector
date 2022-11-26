@@ -71,11 +71,47 @@ knowledge_graph.add_edges_from(
             RheaEntity.REACTION,
             "up:catalyzedReaction",
         ),
-        create_uniprot_triplet_edege(
-            UniprotEntity.PROTEIN, UniprotEntity.RECOMMENDED_NAME, "up:recommendedName"
+        (
+            UniprotEntity.PROTEIN,
+            UniprotEntity.FULL_RECOMMENDED_NAME,
+            {
+                "recipe": Recipe(
+                    Repository.UNIPROT,
+                    [UniprotEntity.PROTEIN, UniprotEntity.FULL_RECOMMENDED_NAME],
+                    lambda d: SQ.OptionalGraphPattern(
+                        SQ.SimpleGraphPattern(
+                            [
+                                SQ.Triplet(
+                                    d[UniprotEntity.PROTEIN],
+                                    "up:recommendedName/up:fullName",
+                                    d[UniprotEntity.FULL_RECOMMENDED_NAME],
+                                )
+                            ]
+                        ),
+                    ),
+                )
+            },
         ),
-        create_uniprot_triplet_edege(
-            UniprotEntity.RECOMMENDED_NAME, UniprotEntity.FULL_NAME, "up:fullName"
+        (
+            UniprotEntity.PROTEIN,
+            UniprotEntity.FULL_SUBMITTED_NAME,
+            {
+                "recipe": Recipe(
+                    Repository.UNIPROT,
+                    [UniprotEntity.PROTEIN, UniprotEntity.FULL_SUBMITTED_NAME],
+                    lambda d: SQ.OptionalGraphPattern(
+                        SQ.SimpleGraphPattern(
+                            [
+                                SQ.Triplet(
+                                    d[UniprotEntity.PROTEIN],
+                                    "up:submittedName/up:fullName",
+                                    d[UniprotEntity.FULL_SUBMITTED_NAME],
+                                )
+                            ]
+                        ),
+                    ),
+                )
+            },
         ),
         (
             UniprotEntity.PROTEIN,

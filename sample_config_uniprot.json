@@ -4,6 +4,7 @@
             "ProteinId",
             "Protein",
             "Name",
+            "SubmittedName",
             "Reaction",
             "Kingdom"
         ]
